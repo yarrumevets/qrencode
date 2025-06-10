@@ -18,6 +18,8 @@ app.post("/api/encode", async (req, res) => {
     return res.status(404).json({ err: "Not found!" });
   }
 
+  console.log("penv: ", process.env.BASE_URL, " -- ", req.get("host"));
+
   const appUrl = req.protocol + "://" + req.get("host");
 
   const { url } = req.body;
