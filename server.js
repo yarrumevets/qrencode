@@ -22,11 +22,7 @@ app.post("/api/encode", async (req, res) => {
   if (Object.keys(codes).length > 500) {
     return res.status(404).json({ err: "Not found!" });
   }
-
-  console.log("penv: ", process.env.BASE_URL, " -- ", req.get("host"));
-
   const appUrl = req.protocol + "://" + req.get("host");
-
   const { url } = req.body;
   let qrData;
   // Validate URL:
@@ -51,9 +47,7 @@ app.get("/qr/:code", async (req, res) => {
   const dest = codes[code];
   if (dest) {
     // res.redirect(301, dest);
-
     const appUrl = req.protocol + "://" + req.get("host");
-
     res.send(`
   <html>
     <head>
