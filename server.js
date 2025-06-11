@@ -7,6 +7,11 @@ const SERVER_PORT = 4192;
 const app = express();
 app.use(express.json());
 
+// Added this in conjunction with the nginx config:
+// proxy_set_header Host $host;
+// proxy_set_header X-Forwarded-Proto $scheme;
+app.set("trust poxy", true);
+
 const codes = {
   abc123: "https://www.ebaumsworld.com",
 };
