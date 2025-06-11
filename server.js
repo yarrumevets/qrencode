@@ -2,6 +2,9 @@ import express from "express";
 import { fileURLToPath } from "url";
 import qrcode from "qrcode";
 
+import { loadDb, getData, addData } from "./jsondb.js";
+await loadDb();
+
 const SERVER_PORT = 4192;
 
 const app = express();
@@ -12,16 +15,8 @@ app.use(express.json());
 // proxy_set_header X-Forwarded-Proto $scheme;
 app.set("trust proxy", true);
 
-const codes = {
-  abc123: "https://www.ebaumsworld.com",
-};
-
 // Send an email using a template.
 app.post("/api/encode", async (req, res) => {
-  // @TODO remove me:
-  if (Object.keys(codes).length > 500) {
-    return res.status(404).json({ err: "Not found!" });
-  }
   const appUrl = req.protocol + "://" + req.get("host");
   const { url } = req.body;
   let qrData;
@@ -31,20 +26,19 @@ app.post("/api/encode", async (req, res) => {
     // create short url:
     const code = Math.random().toString(36).substring(2, 8);
     // save the url and code pair
-    codes[code] = url;
+    addData(code, url);
     const shortUrl = `${appUrl}/qr/${code}`;
     qrData = await qrcode.toDataURL(shortUrl);
   } else {
     // @TODO: handle errors.
   }
-  console.log("Codes: ", codes);
   return res.status(200).json({ qrData });
 });
 
 // Send an email using a template.
 app.get("/qr/:code", async (req, res) => {
   let code = req.params.code;
-  const dest = codes[code];
+  const dest = getData(code);
   if (dest) {
     // res.redirect(301, dest);
     const appUrl = req.protocol + "://" + req.get("host");
