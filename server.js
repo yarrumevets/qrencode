@@ -10,7 +10,7 @@ app.use(express.json());
 // Added this in conjunction with the nginx config:
 // proxy_set_header Host $host;
 // proxy_set_header X-Forwarded-Proto $scheme;
-app.set("trust poxy", true);
+app.set("trust proxy", true);
 
 const codes = {
   abc123: "https://www.ebaumsworld.com",
